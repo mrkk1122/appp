@@ -1,7 +1,7 @@
-```yaml
+
 name: Android APK Build
 
-on:
+"on":
   workflow_dispatch:
 
 permissions:
@@ -16,27 +16,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test Runner
-        run: |
-          echo "GitHub Actions is working"
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Branch: $GITHUB_REF_NAME"
-          echo "Commit: $GITHUB_SHA"
+        run: echo "GitHub Actions is working"
 
       - name: Check Project
         run: |
-          echo "Root directory:"
+          echo "Current directory:"
           pwd
-
-          echo ""
-          echo "Repository files:"
+          echo "Project files:"
           find . -maxdepth 3 -type f | sort
-
-          echo ""
-          echo "Checking Buildozer project..."
-
+          echo "Checking buildozer.spec..."
           test -f mrkk-fastapi-android/buildozer.spec
-          echo "buildozer.spec: OK"
-
+          echo "buildozer.spec OK"
+          echo "Checking main.py..."
           test -f mrkk-fastapi-android/main.py
-          echo "main.py: OK"
+          echo "main.py OK"
 ```
