@@ -1,4 +1,4 @@
-```yaml
+
 name: MRKK FastAPI Android APK
 
 on:
@@ -93,4 +93,3 @@ jobs:
           name: mrkk-fastapi-server-apk
           path: mrkk-fastapi-android/bin/*.apk
           if-no-files-found: error
-```
