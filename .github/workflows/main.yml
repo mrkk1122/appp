@@ -1,5 +1,5 @@
-````yaml
-name: Build Android APK
+```yaml
+name: Build MRKK FastAPI Android APK
 
 on:
   workflow_dispatch:
@@ -12,30 +12,36 @@ permissions:
 
 jobs:
   build:
-    name: Build MRKK FastAPI Android APK
+    name: Build Android APK
     runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: mrkk-fastapi-android
 
     steps:
 
-      # 1. Download repository
-      - name: Checkout repository
+      # Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Setup Java
-      - name: Setup Java 17
+      # Java 17
+      - name: Setup Java
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
+          cache: gradle
 
-      # 3. Setup Python
-      - name: Setup Python 3.11
+      # Python 3.11
+      - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+          cache: pip
 
-      # 4. Install Android/Buildozer dependencies
-      - name: Install system dependencies
+      # System dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
 
@@ -50,54 +56,58 @@ jobs:
             automake \
             libtool \
             pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
             cmake \
             libffi-dev \
-            libssl-dev
+            libssl-dev \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev
 
-      # 5. Upgrade Python build tools
-      - name: Upgrade Python tools
+      # Python build tools
+      - name: Install Buildozer
         run: |
           python -m pip install --upgrade pip
           python -m pip install --upgrade setuptools wheel
+          python -m pip install buildozer
+          python -m pip install "Cython==0.29.37"
 
-      # 6. Install Buildozer
-      - name: Install Buildozer
+      # Verify project
+      - name: Verify project
         run: |
-          pip install buildozer
-          pip install "cython==0.29.37"
-
-      # 7. Check project files
-      - name: Check Android project
-        working-directory: ./mrkk-fastapi-android
-        run: |
-          echo "===== Project Directory ====="
+          echo "================================"
+          echo "Current directory:"
           pwd
+          echo "================================"
 
-          echo "===== Files ====="
+          echo "Project files:"
           find . -maxdepth 3 -type f | sort
 
-          echo "===== Buildozer Spec ====="
+          echo "================================"
+          echo "Checking required files..."
+          echo "================================"
+
           test -f buildozer.spec
-          echo "buildozer.spec found"
+          echo "✓ buildozer.spec found"
 
-          echo "===== Main Python ====="
           test -f main.py
-          echo "main.py found"
+          echo "✓ main.py found"
 
-      # 8. Build APK
+          test -d app
+          echo "✓ app directory found"
+
+          test -d services
+          echo "✓ services directory found"
+
+      # Build APK
       - name: Build APK
-        working-directory: ./mrkk-fastapi-android
         run: |
           buildozer android debug
 
-      # 9. Upload APK
+      # Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: mrkk-fastapi-server-apk
           path: mrkk-fastapi-android/bin/*.apk
           if-no-files-found: error
-
+```
