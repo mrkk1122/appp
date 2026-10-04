@@ -5,7 +5,7 @@ package.domain = com.mrkk
 source.dir = .
 source.include_exts = py,png,jpg,jpeg,kv,txt
 version = 1.0.0
-requirements = python3==3.11.9,kivy,fastapi,uvicorn,pyjnius
+requirements = python3,kivy,fastapi,uvicorn,pyjnius
 orientation = portrait
 fullscreen = 0
 android.permissions = INTERNET,FOREGROUND_SERVICE,FOREGROUND_SERVICE_DATA_SYNC,POST_NOTIFICATIONS,WAKE_LOCK
@@ -14,6 +14,7 @@ android.minapi = 24
 android.ndk = 25b
 android.archs = arm64-v8a
 services = Fastapi:services/fastapi_service.py:foreground:sticky
+p4a.branch = develop
 
 [buildozer]
 log_level = 2
