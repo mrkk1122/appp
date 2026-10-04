@@ -1,7 +1,7 @@
 
 name: Android APK Build
 
-"on":
+on:
   workflow_dispatch:
 
 permissions:
@@ -22,11 +22,15 @@ jobs:
         run: |
           echo "Current directory:"
           pwd
+
           echo "Project files:"
           find . -maxdepth 3 -type f | sort
+
           echo "Checking buildozer.spec..."
           test -f mrkk-fastapi-android/buildozer.spec
           echo "buildozer.spec OK"
+
           echo "Checking main.py..."
           test -f mrkk-fastapi-android/main.py
           echo "main.py OK"
+```
