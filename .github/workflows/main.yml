@@ -30,4 +30,3 @@ jobs:
           echo "Checking main.py..."
           test -f mrkk-fastapi-android/main.py
           echo "main.py OK"
-```
