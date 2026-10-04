@@ -1,5 +1,5 @@
-
-name: Android APK Build
+```yaml id="9u4qgc"
+name: MRKK FastAPI Android APK
 
 on:
   workflow_dispatch:
@@ -9,28 +9,42 @@ permissions:
 
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout
+
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test Runner
-        run: echo "GitHub Actions is working"
+      - name: Setup Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
 
-      - name: Check Project
-        run: |
-          echo "Current directory:"
-          pwd
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
 
-          echo "Project files:"
-          find . -maxdepth 3 -type f | sort
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install -y git zip unzip wget curl build-essential autoconf automake libtool pkg-config cmake libffi-dev libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev
 
-          echo "Checking buildozer.spec..."
-          test -f mrkk-fastapi-android/buildozer.spec
-          echo "buildozer.spec OK"
+      - name: Install Buildozer
+        run: python -m pip install --upgrade pip setuptools wheel buildozer "Cython==0.29.37"
 
-          echo "Checking main.py..."
-          test -f mrkk-fastapi-android/main.py
-          echo "main.py OK"
+      - name: Verify project
+        run: test -f mrkk-fastapi-android/buildozer.spec && test -f mrkk-fastapi-android/main.py
+
+      - name: Build APK
+        working-directory: mrkk-fastapi-android
+        run: buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mrkk-fastapi-server-apk
+          path: mrkk-fastapi-android/bin/*.apk
+          if-no-files-found: error
 ```
